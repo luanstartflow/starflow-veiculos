@@ -37,7 +37,6 @@ COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Compiled application
-COPY --from=builder /app/dist ./dist
 
 # Migration files
 COPY prisma ./prisma/

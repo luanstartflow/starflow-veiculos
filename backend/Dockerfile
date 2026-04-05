@@ -18,7 +18,6 @@ COPY prisma ./prisma/
 RUN npx prisma generate
 
 COPY . .
-RUN npm run build
 
 # ── Stage 3: production image ──────────────────────────────────────────────────
 FROM node:20-alpine AS runner

@@ -1,0 +1,81 @@
+.column {
+  width: 280px;
+  min-width: 280px;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 160px);
+  transition: border-color .2s, background .2s;
+}
+
+.column.dragOver {
+  border-color: var(--color-accent);
+  background: #EFF6FF;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.count {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 99px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cards {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addForm {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.addActions {
+  display: flex;
+  gap: 8px;
+}
+
+.addBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  padding: 10px 14px;
+  text-align: left;
+  border-top: 1px solid var(--color-border);
+  transition: color .15s, background .15s;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+.addBtn:hover { color: var(--color-accent); background: #F0F9FF; }

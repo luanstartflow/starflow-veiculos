@@ -1,0 +1,143 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --color-bg: #F1F5F9;
+  --color-surface: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-sidebar: #0F172A;
+  --color-sidebar-hover: rgba(255,255,255,.07);
+  --color-sidebar-active: rgba(99,102,241,.18);
+  --color-sidebar-active-border: #6366F1;
+  --color-primary: #1E293B;
+  --color-primary-hover: #334155;
+  --color-accent: #6366F1;
+  --color-accent-hover: #4F46E5;
+  --color-accent-subtle: #EEF2FF;
+  --color-danger: #EF4444;
+  --color-danger-subtle: #FEF2F2;
+  --color-success: #10B981;
+  --color-success-subtle: #ECFDF5;
+  --color-warning: #F59E0B;
+  --color-warning-subtle: #FFFBEB;
+  --color-info: #3B82F6;
+  --color-info-subtle: #EFF6FF;
+  --color-violet: #8B5CF6;
+  --color-violet-subtle: #F5F3FF;
+  --color-text: #0F172A;
+  --color-text-muted: #64748B;
+  --color-text-light: #94A3B8;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.05);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.07), 0 2px 4px -2px rgba(0,0,0,.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -4px rgba(0,0,0,.05);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button { cursor: pointer; font-family: inherit; font-size: inherit; }
+
+input, textarea, select { font-family: inherit; font-size: inherit; }
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  border: none;
+  font-weight: 500;
+  font-size: 13px;
+  transition: background .15s, box-shadow .15s, transform .1s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(.98); }
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--color-primary-hover); }
+
+.btn-accent {
+  background: var(--color-accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(99,102,241,.35);
+}
+.btn-accent:hover { background: var(--color-accent-hover); box-shadow: 0 4px 12px rgba(99,102,241,.4); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+.btn-ghost:hover { background: var(--color-surface); }
+
+.btn-danger { background: var(--color-danger); color: #fff; }
+
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ── Card surface ────────────────────────────────────────────── */
+
+.card-surface {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+/* ── Inputs ──────────────────────────────────────────────────── */
+
+.input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  color: var(--color-text);
+}
+.input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+}
+
+/* ── Badges ──────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+.badge-available { background: var(--color-success-subtle); color: #065F46; }
+.badge-reserved  { background: var(--color-warning-subtle); color: #92400E; }
+.badge-sold      { background: var(--color-danger-subtle);  color: #991B1B; }
+.badge-draft     { background: #F1F5F9; color: #475569; }
+.badge-sent      { background: var(--color-info-subtle);    color: #1E40AF; }
+.badge-signed    { background: var(--color-success-subtle); color: #065F46; }
+
+/* ── Utilities ───────────────────────────────────────────────── */
+
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.text-muted { color: var(--color-text-muted); }

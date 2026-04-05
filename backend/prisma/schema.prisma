@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Tenant ───────────────────────────────────────────────────────────────────
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  domain        String?
+  webhookSecret String? @map("webhook_secret")
+  active        Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users     User[]
+  boards    Board[]
+  contacts  Contact[]
+  vehicles  Vehicle[]
+  contracts Contract[]
+  webhooks  WebhookEvent[]
+
+  @@map("tenants")
+}
+
+// ─── User ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  tenantId  String   @map("tenant_id")
+  email     String
+  password  String
+  name      String
+  role      UserRole @default(AGENT)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  cards  Card[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  AGENT
+}
+
+// ─── Board / Column / Card (Kanban) ───────────────────────────────────────────
+
+model Board {
+  id        String   @id @default(uuid())
+  tenantId  String   @map("tenant_id")
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant  Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  columns Column[]
+
+  @@index([tenantId])
+  @@map("boards")
+}
+
+model Column {
+  id        String   @id @default(uuid())
+  boardId   String   @map("board_id")
+  tenantId  String   @map("tenant_id")
+  name      String
+  position  Int      @default(0)
+  color     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  board Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards Card[]
+
+  @@index([boardId])
+  @@index([tenantId])
+  @@map("columns")
+}
+
+model Card {
+  id                     String    @id @default(uuid())
+  tenantId               String    @map("tenant_id")
+  columnId               String    @map("column_id")
+  contactId              String?   @map("contact_id")
+  vehicleId              String?   @map("vehicle_id")
+  assigneeId             String?   @map("assignee_id")
+  title                  String
+  description            String?
+  position               Int       @default(0)
+  value                  Decimal?  @db.Decimal(12, 2)
+  dueDate                DateTime? @map("due_date")
+  chatwootConversationId Int?      @map("chatwoot_conversation_id")
+  metadata               Json?
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  column    Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  contact   Contact?  @relation(fields: [contactId], references: [id])
+  vehicle   Vehicle?  @relation(fields: [vehicleId], references: [id])
+  assignee  User?     @relation(fields: [assigneeId], references: [id])
+  contracts Contract[]
+
+  @@index([tenantId])
+  @@index([columnId])
+  @@index([contactId])
+  @@index([chatwootConversationId])
+  @@map("cards")
+}
+
+// ─── Contact (CRM) ────────────────────────────────────────────────────────────
+
+model Contact {
+  id           String   @id @default(uuid())
+  tenantId     String   @map("tenant_id")
+  name         String
+  phone        String?
+  email        String?
+  document     String?  // CPF ou CNPJ
+  address      Json?
+  chatwootId   Int?     @map("chatwoot_id")
+  notes        String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  cards  Card[]
+
+  @@index([tenantId])
+  @@index([chatwootId])
+  @@map("contacts")
+}
+
+// ─── Vehicle ──────────────────────────────────────────────────────────────────
+
+model Vehicle {
+  id          String        @id @default(uuid())
+  tenantId    String        @map("tenant_id")
+  brand       String
+  model       String
+  year        Int
+  plate       String?
+  color       String?
+  mileage     Int?
+  price       Decimal?      @db.Decimal(12, 2)
+  status      VehicleStatus @default(AVAILABLE)
+  photos      Json?
+  description String?
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  cards  Card[]
+
+  @@index([tenantId])
+  @@index([status])
+  @@map("vehicles")
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+
+// ─── Contract ─────────────────────────────────────────────────────────────────
+
+model Contract {
+  id        String         @id @default(uuid())
+  tenantId  String         @map("tenant_id")
+  cardId    String         @map("card_id")
+  number    String
+  template  String
+  content   String
+  status    ContractStatus @default(DRAFT)
+  signedAt  DateTime?      @map("signed_at")
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([cardId])
+  @@map("contracts")
+}
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  SIGNED
+  CANCELLED
+}
+
+// ─── WebhookEvent ─────────────────────────────────────────────────────────────
+
+model WebhookEvent {
+  id        String   @id @default(uuid())
+  tenantId  String?  @map("tenant_id")
+  type      String
+  payload   Json
+  processed Boolean  @default(false)
+  error     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([type])
+  @@index([processed])
+  @@map("webhook_events")
+}

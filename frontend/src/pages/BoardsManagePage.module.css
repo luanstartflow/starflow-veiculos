@@ -1,0 +1,61 @@
+.createBox { padding: 20px; }
+.subTitle { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+
+.boardList { display: flex; flex-direction: column; gap: 12px; }
+
+.boardItem { padding: 16px 20px; }
+
+.boardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.boardName { font-size: 15px; font-weight: 600; }
+
+.colSection {
+  margin-top: 16px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.colRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.colDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.colName { font-size: 13px; font-weight: 500; flex: 1; }
+.colCount { font-size: 12px; color: var(--color-text-muted); }
+
+.addColForm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.colorRow { display: flex; gap: 4px; align-items: center; }
+
+.colorBtn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  outline-offset: 2px;
+}

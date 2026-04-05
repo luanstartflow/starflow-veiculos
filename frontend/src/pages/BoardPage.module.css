@@ -1,0 +1,16 @@
+.page { display: flex; flex-direction: column; height: 100%; gap: 20px; }
+
+.header { display: flex; align-items: center; gap: 16px; }
+
+.title { font-size: 20px; font-weight: 700; }
+
+.columns {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.loading { color: var(--color-text-muted); padding: 40px; text-align: center; }

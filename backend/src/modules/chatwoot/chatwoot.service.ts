@@ -75,7 +75,14 @@ export class ChatwootService implements OnModuleInit {
       `SELECT "${col}" AS col_value FROM installation_configs WHERE name = 'dashboard_scripts' LIMIT 1`,
     );
 
-    const currentValue: string = existing.rows[0]?.col_value ?? '';
+    // serialized_value is stored as JSON ("\"<script>...\""), plain "value" is text
+    const rawValue = existing.rows[0]?.col_value ?? '';
+    let currentValue: string;
+    try {
+      currentValue = col === 'serialized_value' && rawValue ? JSON.parse(rawValue) as string : rawValue;
+    } catch {
+      currentValue = rawValue;
+    }
 
     // Already up-to-date — idempotent check
     if (currentValue.includes(scriptTag)) {
@@ -85,20 +92,24 @@ export class ChatwootService implements OnModuleInit {
 
     // Backup current value before altering
     if (currentValue.trim()) {
+      const backupValue = col === 'serialized_value' ? JSON.stringify(currentValue) : currentValue;
       await client.query(
         `INSERT INTO installation_configs (name, "${col}", created_at, updated_at)
          VALUES ($1, $2, NOW(), NOW())
          ON CONFLICT (name) DO NOTHING`,
-        ['dashboard_scripts_backup', currentValue],
+        ['dashboard_scripts_backup', backupValue],
       );
       this.logger.log('Backed up existing dashboard_scripts value');
     }
 
     // Remove only our previous marker (leave third-party scripts untouched)
     const withoutOurs = this.removeOurPreviousScript(currentValue);
-    const newValue = withoutOurs.trim()
+    const newPlainValue = withoutOurs.trim()
       ? `${withoutOurs.trim()}\n\n${scriptTag}`
       : scriptTag;
+
+    // Serialize back to JSON if the column is serialized_value
+    const newValue = col === 'serialized_value' ? JSON.stringify(newPlainValue) : newPlainValue;
 
     if (existing.rows.length > 0) {
       await client.query(

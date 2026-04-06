@@ -9,7 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { InjectQueue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { Request } from 'express';
 

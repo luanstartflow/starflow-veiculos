@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { BullModule } from 'bullmq';
+import { BullModule } from '@nestjs/bullmq';
 import configuration from './config/configuration';
 import { PrismaService } from './database/prisma.service';
 import { AuthModule } from './modules/auth/auth.module';

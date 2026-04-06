@@ -1,0 +1,87 @@
+import { VehicleStatus } from '@prisma/client';
+import { PrismaService } from '../../database/prisma.service';
+import { CreateVehicleDto, UpdateVehicleDto } from './dto/vehicle.dto';
+export declare class VehiclesService {
+    private readonly prisma;
+    constructor(prisma: PrismaService);
+    findAll(tenantId: string, status?: VehicleStatus, search?: string): import(".prisma/client").Prisma.PrismaPromise<{
+        description: string | null;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        tenantId: string;
+        color: string | null;
+        brand: string;
+        model: string;
+        year: number;
+        plate: string | null;
+        mileage: number | null;
+        price: import("@prisma/client/runtime/library").Decimal | null;
+        status: import(".prisma/client").$Enums.VehicleStatus;
+        photos: import("@prisma/client/runtime/library").JsonValue | null;
+    }[]>;
+    findOne(tenantId: string, id: string): Promise<{
+        description: string | null;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        tenantId: string;
+        color: string | null;
+        brand: string;
+        model: string;
+        year: number;
+        plate: string | null;
+        mileage: number | null;
+        price: import("@prisma/client/runtime/library").Decimal | null;
+        status: import(".prisma/client").$Enums.VehicleStatus;
+        photos: import("@prisma/client/runtime/library").JsonValue | null;
+    }>;
+    create(tenantId: string, dto: CreateVehicleDto): import(".prisma/client").Prisma.Prisma__VehicleClient<{
+        description: string | null;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        tenantId: string;
+        color: string | null;
+        brand: string;
+        model: string;
+        year: number;
+        plate: string | null;
+        mileage: number | null;
+        price: import("@prisma/client/runtime/library").Decimal | null;
+        status: import(".prisma/client").$Enums.VehicleStatus;
+        photos: import("@prisma/client/runtime/library").JsonValue | null;
+    }, never, import("@prisma/client/runtime/library").DefaultArgs>;
+    update(tenantId: string, id: string, dto: UpdateVehicleDto): Promise<{
+        description: string | null;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        tenantId: string;
+        color: string | null;
+        brand: string;
+        model: string;
+        year: number;
+        plate: string | null;
+        mileage: number | null;
+        price: import("@prisma/client/runtime/library").Decimal | null;
+        status: import(".prisma/client").$Enums.VehicleStatus;
+        photos: import("@prisma/client/runtime/library").JsonValue | null;
+    }>;
+    remove(tenantId: string, id: string): Promise<{
+        description: string | null;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        tenantId: string;
+        color: string | null;
+        brand: string;
+        model: string;
+        year: number;
+        plate: string | null;
+        mileage: number | null;
+        price: import("@prisma/client/runtime/library").Decimal | null;
+        status: import(".prisma/client").$Enums.VehicleStatus;
+        photos: import("@prisma/client/runtime/library").JsonValue | null;
+    }>;
+}

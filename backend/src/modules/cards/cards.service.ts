@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateCardDto, UpdateCardDto, MoveCardDto } from './dto/card.dto';
 
@@ -50,20 +51,26 @@ export class CardsService {
       orderBy: { position: 'desc' },
     });
 
+    const { metadata, ...rest } = dto;
     return this.prisma.card.create({
       data: {
-        ...dto,
+        ...rest,
         tenantId,
         position: lastCard ? lastCard.position + 1 : 0,
-      },
+        ...(metadata !== undefined && { metadata: metadata as Prisma.InputJsonValue }),
+      } as Prisma.CardUncheckedCreateInput,
     });
   }
 
   async update(tenantId: string, id: string, dto: UpdateCardDto) {
     await this.findOne(tenantId, id);
+    const { metadata, ...rest } = dto;
     return this.prisma.card.update({
       where: { id },
-      data: dto,
+      data: {
+        ...rest,
+        ...(metadata !== undefined && { metadata: metadata as Prisma.InputJsonValue }),
+      } as Prisma.CardUncheckedUpdateInput,
       include: {
         contact: true,
         vehicle: true,

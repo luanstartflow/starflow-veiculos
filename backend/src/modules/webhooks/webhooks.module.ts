@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from 'bullmq';
+import { BullModule } from '@nestjs/bullmq';
 import { WebhooksController } from './webhooks.controller';
 import { WEBHOOK_QUEUE } from './webhooks.controller';
 

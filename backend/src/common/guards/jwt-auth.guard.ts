@@ -11,7 +11,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<Request>();
+    const request = context.switchToHttp().getRequest<Request & { user?: { tenantId: string }; tenantId?: string }>();
     const result = super.canActivate(context);
     if (result instanceof Promise) {
       return result.then((activated) => {

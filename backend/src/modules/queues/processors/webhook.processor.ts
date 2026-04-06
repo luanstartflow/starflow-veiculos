@@ -1,6 +1,7 @@
-import { Processor, WorkerHost } from 'bullmq';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
+import { Prisma } from '@prisma/client';
 import * as crypto from 'crypto';
 import { PrismaService } from '../../../database/prisma.service';
 import { WEBHOOK_QUEUE } from '../../webhooks/webhooks.controller';
@@ -53,7 +54,7 @@ export class WebhookProcessor extends WorkerHost {
       data: {
         tenantId: tenant.id,
         type: eventType,
-        payload,
+        payload: payload as Prisma.InputJsonValue,
         processed: false,
       },
     });

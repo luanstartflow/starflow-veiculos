@@ -56,8 +56,7 @@ services:
       REDIS_HOST: redis-kanban
       REDIS_PORT: 6379
       CORS_ORIGIN: "*"
-      JWT_SECRET: ${JWT_SECRET}
-      DISABLE_AUTH: ${DISABLE_AUTH:-false}
+      DISABLE_AUTH: "true"
       DEFAULT_TENANT_ID: ${DEFAULT_TENANT_ID:-}
       <<: *kanbancw-config
     volumes:

@@ -13,7 +13,7 @@ services:
     volumes:
       - kanbancw-postgres:/var/lib/postgresql/data
     networks:
-      - network_public
+      - network_swarm_public
     deploy:
       replicas: 1
       restart_policy:
@@ -32,7 +32,7 @@ services:
     volumes:
       - kanbancw-redis:/data
     networks:
-      - network_public
+      - network_swarm_public
     deploy:
       replicas: 1
       restart_policy:
@@ -46,7 +46,7 @@ services:
           memory: 64M
 
   backend:
-    image: luantuyter/globalveiculos-backend:1.0
+    image: luantuyster/starflow-veiculos-backend:latest
     environment:
       NODE_ENV: production
       PORT: 3000
@@ -63,7 +63,7 @@ services:
     volumes:
       - kanbancw-uploads:/app/uploads
     networks:
-      - network_public
+      - network_swarm_public
     deploy:
       replicas: 1
       update_config:
@@ -81,18 +81,18 @@ services:
           memory: 128M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.kanbancw-backend.rule=Host(`${KANBANCW_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/webhooks`) || PathPrefix(`/health`) || PathPrefix(`/socket.io`) || PathPrefix(`/dashboard-script`) || PathPrefix(`/uploads`))"
-        - "traefik.http.routers.kanbancw-backend.entrypoints=websecure"
-        - "traefik.http.routers.kanbancw-backend.tls=true"
-        - "traefik.http.routers.kanbancw-backend.tls.certresolver=letsencryptresolver"
-        - "traefik.http.routers.kanbancw-backend.priority=100"
-        - "traefik.http.services.kanbancw-backend.loadbalancer.server.port=3000"
-        - "traefik.docker.network=network_public"
+        - "traefik.http.routers.gv-backend.rule=Host(`${KANBANCW_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/webhooks`) || PathPrefix(`/health`) || PathPrefix(`/socket.io`) || PathPrefix(`/dashboard-script`) || PathPrefix(`/uploads`))"
+        - "traefik.http.routers.gv-backend.entrypoints=websecure"
+        - "traefik.http.routers.gv-backend.tls=true"
+        - "traefik.http.routers.gv-backend.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.gv-backend.priority=100"
+        - "traefik.http.services.gv-backend.loadbalancer.server.port=3000"
+        - "traefik.docker.network=network_swarm_public"
 
   frontend:
-    image: luantuyter/globalveiculos-frontend:1.0
+    image: luantuyster/starflow-veiculos-frontend:latest
     networks:
-      - network_public
+      - network_swarm_public
     deploy:
       replicas: 1
       update_config:
@@ -110,13 +110,13 @@ services:
           memory: 64M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.kanbancw-frontend.rule=Host(`${KANBANCW_DOMAIN}`)"
-        - "traefik.http.routers.kanbancw-frontend.entrypoints=websecure"
-        - "traefik.http.routers.kanbancw-frontend.tls=true"
-        - "traefik.http.routers.kanbancw-frontend.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.kanbancw-frontend.loadbalancer.server.port=80"
-        - "traefik.docker.network=network_public"
-        - "traefik.http.routers.kanbancw-frontend.priority=1"
+        - "traefik.http.routers.gv-frontend.rule=Host(`${KANBANCW_DOMAIN}`)"
+        - "traefik.http.routers.gv-frontend.entrypoints=websecure"
+        - "traefik.http.routers.gv-frontend.tls=true"
+        - "traefik.http.routers.gv-frontend.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.gv-frontend.loadbalancer.server.port=80"
+        - "traefik.docker.network=network_swarm_public"
+        - "traefik.http.routers.gv-frontend.priority=1"
 
 volumes:
   kanbancw-postgres:
@@ -130,5 +130,5 @@ volumes:
     name: kanbancw-redis
 
 networks:
-  network_public:
+  network_swarm_public:
     external: true

@@ -60,12 +60,22 @@ export class ChatwootService implements OnModuleInit {
   private async upsertDashboardScript(client: Client, domain: string): Promise<void> {
     const scriptTag = `${SCRIPT_MARKER}\n<script src="https://${domain}/dashboard-script" defer></script>`;
 
+    // Detect which column name Chatwoot uses (older: "value", newer: "serialized_value")
+    const colCheck = await client.query<{ column_name: string }>(`
+      SELECT column_name FROM information_schema.columns
+      WHERE table_schema = 'public'
+        AND table_name = 'installation_configs'
+        AND column_name IN ('value', 'serialized_value')
+      LIMIT 1
+    `);
+    const col = colCheck.rows[0]?.column_name ?? 'serialized_value';
+
     // Read current value
-    const existing = await client.query<{ value: string }>(
-      `SELECT value FROM installation_configs WHERE name = 'dashboard_scripts' LIMIT 1`,
+    const existing = await client.query<{ col_value: string }>(
+      `SELECT "${col}" AS col_value FROM installation_configs WHERE name = 'dashboard_scripts' LIMIT 1`,
     );
 
-    const currentValue: string = existing.rows[0]?.value ?? '';
+    const currentValue: string = existing.rows[0]?.col_value ?? '';
 
     // Already up-to-date — idempotent check
     if (currentValue.includes(scriptTag)) {
@@ -76,7 +86,7 @@ export class ChatwootService implements OnModuleInit {
     // Backup current value before altering
     if (currentValue.trim()) {
       await client.query(
-        `INSERT INTO installation_configs (name, value, created_at, updated_at)
+        `INSERT INTO installation_configs (name, "${col}", created_at, updated_at)
          VALUES ($1, $2, NOW(), NOW())
          ON CONFLICT (name) DO NOTHING`,
         ['dashboard_scripts_backup', currentValue],
@@ -92,12 +102,12 @@ export class ChatwootService implements OnModuleInit {
 
     if (existing.rows.length > 0) {
       await client.query(
-        `UPDATE installation_configs SET value = $1, updated_at = NOW() WHERE name = 'dashboard_scripts'`,
+        `UPDATE installation_configs SET "${col}" = $1, updated_at = NOW() WHERE name = 'dashboard_scripts'`,
         [newValue],
       );
     } else {
       await client.query(
-        `INSERT INTO installation_configs (name, value, created_at, updated_at) VALUES ('dashboard_scripts', $1, NOW(), NOW())`,
+        `INSERT INTO installation_configs (name, "${col}", created_at, updated_at) VALUES ('dashboard_scripts', $1, NOW(), NOW())`,
         [newValue],
       );
     }
